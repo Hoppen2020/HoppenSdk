@@ -1,0 +1,3 @@
+rootProject.name='HoppenSdk'
+include ':app'
+include ':hoppensdk'
