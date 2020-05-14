@@ -12,6 +12,6 @@ allprojects {
 ```
 ```
 dependencies {
-            implementation 'com.github.yang0hui:HoppenSdk:1.0.0'
+            implementation 'com.github.Hoppen2020:HoppenSdk:1.0.0'
 	     }
 ```
