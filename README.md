@@ -1,5 +1,5 @@
 # HoppenSdk
-### Step 1 ：
+## Usage
 
 ```
 allprojects {
