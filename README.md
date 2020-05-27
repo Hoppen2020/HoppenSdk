@@ -31,7 +31,13 @@ step 2 ：添加权限
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET"/>
 ```
-step 3 : 建议在Application中初始化hoppensdk，不需监听初始化回调的**InitializeCallBack**可以为**null**
+step 3 ：填写申请的key在项目中
+```
+<application>
+    <meta-data android:name="com.hoppen.sdk.key" android:value="your key" />
+</application>
+```
+step 4 : 建议在Application中初始化hoppensdk，不需监听初始化回调的**InitializeCallBack**可以为**null**
 ```
   public class App extends Application {
     @Override
