@@ -1,7 +1,7 @@
 # HoppenSdk
-## Usage
+## 准备工作
 
-step 1 ：**添加依赖**，ndk配置可根据需求调整
+step 1 ：添加依赖，ndk配置可根据需求调整
 ```
 defaultconifg{
 	...
@@ -25,7 +25,7 @@ dependencies {
             implementation 'com.github.Hoppen2020:HoppenSdk:1.0.0'
 	     }
 ```
-step 2 ：**添加权限**
+step 2 ：添加权限
 ```
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -37,7 +37,7 @@ step 3 ：填写申请的**key**在项目中
     <meta-data android:name="com.hoppen.sdk.key" android:value="your key" />
 </application>
 ```
-step 4 : 建议在**Application**中初始化hoppensdk，不需监听初始化回调的**InitializeCallBack**可以为**null**
+step 4 : 建议在Application中初始化hoppensdk，不需监听初始化回调的**InitializeCallBack**可以为**null**
 ```
   public class App extends Application {
     @Override
@@ -55,6 +55,49 @@ step 4 : 建议在**Application**中初始化hoppensdk，不需监听初始化�
 }	
 
 ```  
+## API调用关键代码
+### 摄像头部分： 
+在使用的activity中继承CameraAcitvity，重写findUVCTextureViewById()、setResolutionWidth()、setResolutionHeight()方法，在findUVCTextureViewById中填入当前layout用来显示摄像头画面的控件**UVCCameraTextureView**，setResolutionWidth和setResolutionHeight分别填入初始分辨率的宽高（仅支持当前设备中支持的分辨率，获取当前设备支持的分辨率可以调用getSupportSize()，使用setResolution(int width, int height) 来设置）
+```
+public class MainActivity extends CameraActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+    }
+
+    @Override
+    public int findUVCTextureViewById() {
+        return R.id.uvc_camera;
+    }
+
+    @Override
+    public int setResolutionWidth() {
+        return 640;
+    }
+
+    @Override
+    public int setResolutionHeight() {
+        return 480;
+    }
+
+    @Override
+    public void onCaptureCallBack(Bitmap bitmap, float resistance) {
+       
+    }
+
+    @Override
+    public void onDeviceOnline() {
+        
+    }
+
+    @Override
+    public void onDeviceOffline() {
+       
+    }
+
+}
+```
 ### 初始化错误信息  
 |错误码名|错误代码|错误信息说明|
 |---|:---:|---|
