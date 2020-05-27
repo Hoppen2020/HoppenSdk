@@ -25,7 +25,7 @@ dependencies {
             implementation 'com.github.Hoppen2020:HoppenSdk:1.0.0'
 	     }
 ```
-step 2 ：添加**权限**
+step 2 ：**添加权限**
 ```
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
