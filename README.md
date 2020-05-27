@@ -1,7 +1,7 @@
 # HoppenSdk
 ## Usage
 
-step 1 ：添加依赖，ndk配置可根据需求调整
+step 1 ：**添加依赖**，ndk配置可根据需求调整
 ```
 defaultconifg{
 	...
@@ -25,19 +25,19 @@ dependencies {
             implementation 'com.github.Hoppen2020:HoppenSdk:1.0.0'
 	     }
 ```
-step 2 ：添加权限
+step 2 ：添加**权限**
 ```
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET"/>
 ```
-step 3 ：填写申请的key在项目中
+step 3 ：填写申请的**key**在项目中
 ```
 <application>
     <meta-data android:name="com.hoppen.sdk.key" android:value="your key" />
 </application>
 ```
-step 4 : 建议在Application中初始化hoppensdk，不需监听初始化回调的**InitializeCallBack**可以为**null**
+step 4 : 建议在**Application**中初始化hoppensdk，不需监听初始化回调的**InitializeCallBack**可以为**null**
 ```
   public class App extends Application {
     @Override
