@@ -65,7 +65,7 @@ step 4 : 建议在Application中初始化hoppensdk，不需监听初始化回调
 
 **onCaptureCallBack**，截图的回调，**resistance**为电阻值，**0**为没接触皮肤（默认截图大小为**640*480**，可以在截图前调用**setCaptureSize**来设置截图大小）
 
-**onDeviceOnline**、**onDeviceOffline**，设备在线和掉线的提醒
+**onDeviceOnline**、**onDeviceOffline**，设备在线和掉线的回调提醒
 
 设置灯光：  
 调用**cameraLightForClose**：关闭灯光  
