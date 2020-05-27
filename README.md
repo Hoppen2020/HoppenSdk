@@ -58,9 +58,13 @@ step 4 : 建议在Application中初始化hoppensdk，不需监听初始化回调
 ## API调用关键代码
 ### 摄像头部分： 
 在使用的activity中继承**CameraAcitvity**，重写几个重要的方法即可  
+
 **findUVCTextureViewById**用来显示摄像头画面的控件**UVCCameraTextureView**  
+
 **setResolutionWidth**、**setResolutionHeight**，填入初始分辨率的宽高（默认是0最低分辨率，仅可以使用当前设备中支持的分辨率，获取当前设备支持的分辨率可以调用**getSupportSize**，使用**setResolution**来设置需要的分辨率）  
+
 **onCaptureCallBack**，截图的回调，**resistance**为电阻值，0为没接触皮肤（默认截图大小为640*480，可以在截图前调用**setCaptureSize**来设置截图大小）
+
 ```
 public class MainActivity extends CameraActivity {
     @Override
