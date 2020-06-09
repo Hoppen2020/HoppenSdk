@@ -114,11 +114,6 @@ public class MainActivity extends CameraActivity {
 
 }
 ```  
-### 功能头部分： 
-在使用的activity中继承**ProbeAcitvity**  
-
-**onDeviceOnline**、**onDeviceOffline**，设备在线和掉线的回调提醒
-
 
 ### 初始化错误信息  
 |错误码名|错误代码|错误信息说明|
