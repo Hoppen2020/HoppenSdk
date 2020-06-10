@@ -12,11 +12,15 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import java.lang.ref.WeakReference;
+
 
 /**
  * Created by YangJianHui on 2020/3/27.
  */
 public class McuControl {
+    public final static int DEVICE_TYPE_CAMERA = 1;
+    public final static int DEVICE_TYPE_PROBE = 2;
 
     private UsbManager usbManager;
     private UsbDevice usbDevice;
@@ -24,15 +28,8 @@ public class McuControl {
     private UsbDeviceConnection usbDeviceConnection;
     private UsbInterface usbInterface;
     private UsbEndpoint epOut, epIn;
-    private Handler handler = new Handler(){
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            String decodingData =  UsbInstructionUtils.decodingUsb((byte[]) msg.obj);
-            Log.e("AAA","111   "+decodingData);
-            if (decodingData!=null)mcuLoadDataListener.loadData(decodingData);
-        }
-    };
     private Thread loadDataThread;
+    private McuHandler mcuHandler;
 
     private McuLoadDataListener mcuLoadDataListener;
 
@@ -51,7 +48,7 @@ public class McuControl {
                         if (mcuLoadDataListener!=null){
                             Message msg = Message.obtain();
                             msg.obj = data;
-                            handler.sendMessage(msg);
+                            if (mcuHandler!=null)mcuHandler.sendMessage(msg);
                             //data = new byte[1024];
                         }
                     }
@@ -73,9 +70,10 @@ public class McuControl {
     public McuControl(UsbManager usbManager, UsbDevice usbDevice){
         this.usbManager = usbManager;
         this.usbDevice = usbDevice;
+        mcuHandler = new McuHandler(this);
     }
 
-    public boolean openDevice(){
+    public boolean openDevice(int type){
         if (opened)return true;
         if (usbDevice==null||usbManager==null)return false;
         usbDeviceConnection = usbManager.openDevice(usbDevice);
@@ -102,11 +100,34 @@ public class McuControl {
                 epIn = ep;
             }
         }
-        opened = true;
-        loadDataThread = new Thread(loadDataRunnable);
-        loadDataThread.start();
+        opened = requestDevice(type);
+        if (opened){
+            loadDataThread = new Thread(loadDataRunnable);
+            loadDataThread.start();
+        }
         return opened;
     }
+
+    private boolean requestDevice(int type){
+        boolean is = false;
+        if (opened) return is;
+        byte sendData []=
+                type==DEVICE_TYPE_CAMERA?
+                        UsbInstructionUtils.USB_CAMERA_PRODUCT_CODE()
+                        :type==DEVICE_TYPE_PROBE?
+                        UsbInstructionUtils.USB_PROBE_PRODUCT_CODE():null;
+        if (sendData==null) return false;
+        if (usbDeviceConnection==null||epIn==null||epOut==null)return false;
+
+        usbDeviceConnection.bulkTransfer(epOut, sendData, sendData.length, 500);
+        byte[] data = new byte[50];
+        int cnt = usbDeviceConnection.bulkTransfer(epIn, data, data.length,500);
+        if (cnt > 0) {
+            is = true;
+        }
+        return is;
+    }
+
 
     public void closeDevice(){
             if (usbDeviceConnection!=null){
@@ -321,5 +342,24 @@ public class McuControl {
         return retval;
     }
 
+
+    private class McuHandler extends Handler{
+
+        private WeakReference<McuControl> weakReference;
+
+        public McuHandler(McuControl mcuControl){
+            weakReference = new WeakReference<>(mcuControl);
+        }
+
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            if (weakReference.get()!=null){
+                String decodingData =  UsbInstructionUtils.decodingUsb((byte[]) msg.obj);
+                Log.e("AAA","111   "+decodingData);
+                if (decodingData!=null)mcuLoadDataListener.loadData(decodingData);
+            }
+        }
+    }
 
 }

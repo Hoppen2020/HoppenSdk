@@ -9,14 +9,66 @@ import java.util.Arrays;
  */
 
 public class UsbInstructionUtils {
-    private final static byte[] USB_APP_VER = {(byte) 0xAA, (byte) 0x01, (byte) 0x02, (byte) 0x00, (byte) 0x00, (byte) 0x00};
-    private final static byte[] USB_CAPTURE_MODE2 = {(byte) 0xAA, (byte) 0x10, (byte) 0x02, (byte) 0x00, (byte) 0x00};//获取水分值截图
-    private final static byte[] USB_LIGHT_RGB = {(byte) 0xAA, (byte) 0x10, (byte) 0x03, (byte) 0x00, (byte) 0x00};
-    private final static byte[] USB_LIGHT_POLARIZED = {(byte) 0xAA, (byte) 0x10, (byte) 0x04, (byte) 0x00, (byte) 0x00};
-    private final static byte[] USB_LIGHT_UV = {(byte) 0xAA, (byte) 0x10, (byte) 0x05, (byte) 0x00, (byte) 0x00};
-    private final static byte[] USB_LIGHT_CLOSE = {(byte) 0xAA, (byte) 0x10, (byte) 0x07, (byte) 0x00, (byte) 0x00};
-    private final static byte[] USB_SYS_ONLINE = {(byte) 0xAA, (byte) 0x10, (byte) 0x01, (byte) 0x00, (byte) 0x00};
+    /**
+     *  指令：产品码
+     * @return
+     */
+    public static byte[] USB_CAMERA_PRODUCT_CODE() {
+        byte [] data = {(byte) 0xAA, (byte) 0x01, (byte) 0x02, (byte) 0x00, (byte) 0x00};
+        return encryption(data);
+    }
 
+    /**
+     * 指令：截图
+     * @return
+     */
+    public static byte[] USB_CAMERA_CAPTURE_MODE2() {
+        byte [] data = {(byte) 0xAA, (byte) 0x10, (byte) 0x02, (byte) 0x00, (byte) 0x00};
+        return encryption(data);
+    }
+    /**
+     * 指令：rgb灯光
+     * @return
+     */
+    public static byte[] USB_CAMERA_LIGHT_RGB() {
+        byte [] data = {(byte) 0xAA, (byte) 0x10, (byte) 0x03, (byte) 0x00, (byte) 0x00};
+        return encryption(data);
+    }
+    /**
+     * 指令：偏振灯光
+     * @return
+     */
+    public static byte[] USB_CAMERA_LIGHT_POLARIZED() {
+        byte [] data = {(byte) 0xAA, (byte) 0x10, (byte) 0x04, (byte) 0x00, (byte) 0x00};
+        return encryption(data);
+    }
+
+    /**
+     * 指令：uv灯光
+     * @return
+     */
+    public static byte[] USB_CAMERA_LIGHT_UV() {
+        byte [] data =  {(byte) 0xAA, (byte) 0x10, (byte) 0x05, (byte) 0x00, (byte) 0x00};
+        return encryption(data);
+    }
+
+    /**
+     * 指令：关闭灯关
+     * @return
+     */
+    public static byte[] USB_CAMERA_LIGHT_CLOSE() {
+        byte [] data =  {(byte) 0xAA, (byte) 0x10, (byte) 0x07, (byte) 0x00, (byte) 0x00};
+        return encryption(data);
+    }
+
+    /**
+     * 指令：心跳包
+     * @return
+     */
+    public static byte[] USB_CAMERA_SYS_ONLINE(){
+        byte [] data =  {(byte) 0xAA, (byte) 0x10, (byte) 0x01, (byte) 0x00, (byte) 0x00};
+        return encryption(data);
+    }
 
     private static byte[] encryption(byte[] data) {
         byte[] returnData = new byte[data.length + 1];
@@ -34,40 +86,18 @@ public class UsbInstructionUtils {
         return returnData;
     }
 
-    public static byte[] USB_CAPTURE_MODE2() {
-        return encryption(USB_CAPTURE_MODE2);
-    }
-    public static byte[] USB_LIGHT_RGB() {
-        return encryption(USB_LIGHT_RGB);
+
+    public static byte[] USB_PROBE_PRODUCT_CODE(){
+        byte[] data= {(byte) 0xAA, (byte) 0x01, (byte) 0x01, (byte) 0x00, (byte) 0x00, (byte) 0x00};
+        return encryption(data);
     }
 
-    public static byte[] USB_LIGHT_POLARIZED() {
-        return encryption(USB_LIGHT_POLARIZED);
+    public static byte[] USB_PROBE_SYS_ONLINE(){
+        byte[] data= {(byte) 0xAA, (byte) 0x01, (byte) 0x03, (byte) 0x00, (byte) 0x00, (byte) 0x00};
+        return encryption(data);
     }
 
-    public static byte[] USB_LIGHT_UV() {
-        return encryption(USB_LIGHT_UV);
-    }
-
-    public static byte[] USB_LIGHT_CLOSE() {
-        return encryption(USB_LIGHT_CLOSE);
-    }
-
-    public static byte[] USB_SYS_ONLINE(){
-        return encryption(USB_SYS_ONLINE);
-    }
-
-    public static byte[] USB_DEVICE_CODE(){
-        byte[] linePackage= {(byte) 0xAA, (byte) 0x01, (byte) 0x01, (byte) 0x00, (byte) 0x00, (byte) 0x00};
-        return encryption(linePackage);
-    }
-
-    public static byte[] USB_LINE_PACKAGE(){
-        byte[] linePackage= {(byte) 0xAA, (byte) 0x01, (byte) 0x03, (byte) 0x00, (byte) 0x00, (byte) 0x00};
-        return encryption(linePackage);
-    }
-
-    public static byte[] USB_HANDLE_START(int modePosition,int strength,int time){
+    public static byte[] USB_PROBE_START(int modePosition,int strength,int time){
         byte mode = 0;
         byte mStrength=(byte)strength;
         byte mtime_1 = (byte)(time/256);
@@ -77,7 +107,7 @@ public class UsbInstructionUtils {
         return encryption(config);
     }
 
-    public static byte[] USB_HANDLE_STOP(int modePosition,int strength,int time){
+    public static byte[] USB_PROBE_STOP(int modePosition,int strength,int time){
         byte mode = 0;
         byte mStrength=(byte)strength;
         byte mtime_1 = (byte)(time/256);
@@ -87,7 +117,7 @@ public class UsbInstructionUtils {
         return encryption(config);
     }
 
-    public static byte[] USB_HANDLE_SET(String typeName){
+    public static byte[] USB_PROBE_SET(String typeName){
         byte handle=0;
         if (typeName.equals("WSKT001")){
             handle =(byte) 0x01;
@@ -128,39 +158,33 @@ public class UsbInstructionUtils {
         return encryption(config);
     }
 
-    public static byte[] USB_ENTER_RATE(){
+    public static byte[] USB_PROBE_ENTER_RATE(){
         byte[] config={(byte) 0xAA, (byte) 0x13, (byte) 0x01, (byte) 0x00, (byte) 0x00,  (byte) 0x00};
         return encryption(config);
     }
 
-    public static byte[] USB_CLOSE_RATE(){
+    public static byte[] USB_PROBE_CLOSE_RATE(){
         byte[] config={(byte) 0xAA, (byte) 0x13, (byte) 0x03, (byte) 0x00, (byte) 0x00,  (byte) 0x00};
         return encryption(config);
     }
 
-    public static byte[] USB_SET_RATE(int data){
+    public static byte[] USB_PROBE_SET_RATE(int data){
         int a = (data >>8 );
         int b = (data & 0xff);
-        Log.e("DDDD",""+(byte)a+"   "+(byte)b);
         byte[] config={(byte) 0xAA, (byte) 0x13, (byte) 0x02, (byte) 0x00, (byte) a, (byte) b};
         return encryption(config);
     }
 
 
 
-    public static byte[] USB_HANDLE_SINGLE_SET(int modePosition,int strength,int time){
+    public static byte[] USB_PROBE_SINGLE_SET(int modePosition,int strength,int time){
         byte mode = 0;
         byte mStrength=(byte)strength;
         byte mtime_1 = time==0?(byte)0:(byte)(time/256);
         byte mtime_2 = time==0?(byte)0:(byte)(time%256);
         mode = (byte) modePosition;
         byte[] config={(byte) 0xAA, (byte) 0x12, mode, mStrength, mtime_1,  mtime_2};
-        byte[] newConfig=encryption(config);
-        Log.e("XXX",""+ Arrays.toString(newConfig));
         return encryption(config);
-    }
-    public static byte[] test(){
-        return encryption(USB_APP_VER);
     }
 
     public static String decodingUsb(byte [] data) {

@@ -14,6 +14,7 @@ import com.serenegiant.usb.UVCCamera;
 import com.serenegiant.usb.camera.widget.CameraViewInterface;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 public final class CameraHandler extends Handler {
 	private static final int MSG_OPEN = 0;
@@ -24,8 +25,8 @@ public final class CameraHandler extends Handler {
 	private static final int MSG_MEDIA_UPDATE = 7;
 	private static final int MSG_SET_IBUTTON_CALLBACK = 8;
 	private static final int MSG_RELEASE = 9;
-	private static  int PREVIEW_WIDTH = 640;// 1600
-	private static  int PREVIEW_HEIGHT = 480;// 1200
+	private static  int PREVIEW_WIDTH = 0;// 1600
+	private static  int PREVIEW_HEIGHT = 0;// 1200
 	private static final int PREVIEW_MODE = UVCCamera.FRAME_FORMAT_MJPEG;
 	public final WeakReference<CameraThread> mWeakThread;
 	public boolean destroy = false;
@@ -45,6 +46,11 @@ public final class CameraHandler extends Handler {
 		return thread.getHandler();
 	}
 
+	public static final void setResolution(int width , int height){
+		PREVIEW_WIDTH = width;
+		PREVIEW_HEIGHT = height;
+	}
+
 	private CameraHandler(final CameraThread thread) {
 		mWeakThread = new WeakReference<CameraThread>(thread);
 	}
@@ -54,9 +60,18 @@ public final class CameraHandler extends Handler {
 		return thread != null ? thread.isCameraOpened() : false;
 	}
 
-	public void openCamera(final USBMonitor.UsbControlBlock ctrlBlock, final IButtonCallback buttonCallback, final int width, final int height) {
-		PREVIEW_WIDTH=width;
-		PREVIEW_HEIGHT = height;
+	public List<Size> getSupportedSizeList(){
+		List<Size> list = null;
+		final CameraThread thread = mWeakThread.get();
+		if (thread!=null){
+			list=thread.getSupportedSizeList();
+		}
+		return list;
+	}
+
+	public void openCamera(final USBMonitor.UsbControlBlock ctrlBlock, final IButtonCallback buttonCallback) {
+//		PREVIEW_WIDTH=width;
+//		PREVIEW_HEIGHT = height;
 		Message msg=new Message();
 		msg.what=MSG_OPEN;
 		Object[] objects={ctrlBlock,buttonCallback};
@@ -184,16 +199,11 @@ public final class CameraHandler extends Handler {
 		public void handleOpen(final USBMonitor.UsbControlBlock ctrlBlock, final IButtonCallback buttonCallback) {
 			handleClose();
 			mUVCCamera = new UVCCamera();
-			mUVCCamera.open(ctrlBlock,PREVIEW_WIDTH,PREVIEW_HEIGHT);
-//			if (Debug.isOpen) {
-//				Toast.makeText(
-//						mWeakParent.get(),
-//						"OutCamera Support Size: "
-//								+ mUVCCamera.getSupportedSize(),
-//						Toast.LENGTH_LONG).show();
-//			}
-				mUVCCamera.setButtonCallback(buttonCallback);
+			mUVCCamera.open(ctrlBlock,PREVIEW_WIDTH,PREVIEW_HEIGHT);//,PREVIEW_WIDTH,PREVIEW_HEIGHT
+			mUVCCamera.setButtonCallback(buttonCallback);
 		}
+
+
 
 		public void handleClose() {
 			if (mUVCCamera != null) {
@@ -208,12 +218,11 @@ public final class CameraHandler extends Handler {
 			if (mUVCCamera == null)
 				return;
 			try {
-				mUVCCamera.setPreviewSize(PREVIEW_WIDTH, PREVIEW_HEIGHT,
-						PREVIEW_MODE);
+				mUVCCamera.setPreviewSize(PREVIEW_MODE);
 			} catch (final IllegalArgumentException e) {
 				try {
 					// fallback to YUV mode
-					mUVCCamera.setPreviewSize(PREVIEW_WIDTH, PREVIEW_HEIGHT,
+					mUVCCamera.setPreviewSize(
 							UVCCamera.DEFAULT_PREVIEW_MODE);
 				} catch (final IllegalArgumentException e1) {
 					handleClose();
@@ -223,6 +232,13 @@ public final class CameraHandler extends Handler {
 				mUVCCamera.setPreviewDisplay(surface);
 				mUVCCamera.startPreview();
 			}
+		}
+
+		public List<Size> getSupportedSizeList(){
+			if (mUVCCamera!=null){
+				return mUVCCamera.getSupportedSizeList();
+			}
+			return null;
 		}
 
 		public void handleStopPreview() {

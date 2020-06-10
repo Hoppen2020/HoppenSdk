@@ -30,6 +30,9 @@ import android.hardware.usb.UsbInterface;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.hoppen.sdk.ErrorInfo;
+import com.hoppen.sdk.HoppenSDK;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -124,7 +127,7 @@ public final class DeviceFilter {
 			while (eventType != XmlPullParser.END_DOCUMENT) {
 	            if (eventType == XmlPullParser.START_TAG) {
 					final DeviceFilter deviceFilter = readEntryOne(context, parser);
-					if (deviceFilter != null) {
+					if (deviceFilter != null ) {//&& HoppenSDK.getInitStatus()== ErrorInfo.HP_OK
 						deviceFilters.add(deviceFilter);
 					}
 	            }

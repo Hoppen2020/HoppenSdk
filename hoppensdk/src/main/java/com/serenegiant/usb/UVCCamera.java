@@ -37,6 +37,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hoppen.sdk.LogUtils;
 import com.serenegiant.usb.USBMonitor;
 import com.serenegiant.usb.camera.Size;
 
@@ -45,8 +46,8 @@ public class UVCCamera {
 	private static final String TAG = UVCCamera.class.getSimpleName();
 	private static final String DEFAULT_USBFS = "/dev/bus/usb";
 
-	public static  int DEFAULT_PREVIEW_WIDTH = 800;//2048
-	public static  int DEFAULT_PREVIEW_HEIGHT = 600;//1536
+	public static  int DEFAULT_PREVIEW_WIDTH = 640;//2048 640 480
+	public static  int DEFAULT_PREVIEW_HEIGHT = 480;//1536
 	public static final int DEFAULT_PREVIEW_MODE = 0;
 	public static final float DEFAULT_BANDWIDTH = 1.0f;
 
@@ -182,7 +183,7 @@ public class UVCCamera {
      * USB permission is necessary before this method is called
      * @param ctrlBlock
      */
-    public void open(final USBMonitor.UsbControlBlock ctrlBlock, int width, int height) {
+    public void open(final USBMonitor.UsbControlBlock ctrlBlock,int width , int height) {
 		try{
     	mCtrlBlock = ctrlBlock;
 		nativeConnect(mNativePtr,
@@ -191,13 +192,45 @@ public class UVCCamera {
 			getUSBFSName(mCtrlBlock));
     	if (mNativePtr != 0 && TextUtils.isEmpty(mSupportedSize)) {
     		mSupportedSize = nativeGetSupportedSize(mNativePtr);
+			//LogUtils.e("mSupportedSize::: "+mSupportedSize);
+			try {
+			if (width!=0&&height!=0){
+				DEFAULT_PREVIEW_WIDTH = width;
+				DEFAULT_PREVIEW_HEIGHT = height;
+			}else{
+				List<Size> supportedSizeList = getSupportedSizeList();
+				if (supportedSizeList.size()>0){
+					Size size = supportedSizeList.get(0);
+					DEFAULT_PREVIEW_WIDTH = size.width;
+					DEFAULT_PREVIEW_HEIGHT = size.height;
+				}
+			}
+			}catch (Exception e){
+			}
     	}
-		DEFAULT_PREVIEW_WIDTH = width;
-		DEFAULT_PREVIEW_HEIGHT = height;
 		nativeSetPreviewSize(mNativePtr, DEFAULT_PREVIEW_WIDTH, DEFAULT_PREVIEW_HEIGHT, DEFAULT_PREVIEW_MODE, DEFAULT_BANDWIDTH);
 	}catch (Exception e){
-}
+		}
     }
+
+//	public void open(final USBMonitor.UsbControlBlock ctrlBlock,int width,int height) {
+//		try{
+//			mCtrlBlock = ctrlBlock;
+//			nativeConnect(mNativePtr,
+//					mCtrlBlock.getVenderId(), mCtrlBlock.getProductId(),
+//					mCtrlBlock.getFileDescriptor(),
+//					getUSBFSName(mCtrlBlock));
+//			if (mNativePtr != 0 && TextUtils.isEmpty(mSupportedSize)) {
+//				mSupportedSize = nativeGetSupportedSize(mNativePtr);
+//				//LogUtils.e("mSupportedSize::: "+mSupportedSize);
+//				DEFAULT_PREVIEW_WIDTH =width;
+//				DEFAULT_PREVIEW_HEIGHT = height;
+//			}
+//			nativeSetPreviewSize(mNativePtr, DEFAULT_PREVIEW_WIDTH, DEFAULT_PREVIEW_HEIGHT, DEFAULT_PREVIEW_MODE, DEFAULT_BANDWIDTH);
+//		}catch (Exception e){
+//		}
+//	}
+
 
 	/**
 	 * set status callback
@@ -277,8 +310,8 @@ public class UVCCamera {
 	   @param height
 	   @param mode 0:yuyv, other:MJPEG
 	 */
-	public void setPreviewSize(final int width, final int height, final int mode) {
-		setPreviewSize(width, height, mode, 0);
+	public void setPreviewSize(final int mode) {
+		setPreviewSize(DEFAULT_PREVIEW_WIDTH, DEFAULT_PREVIEW_HEIGHT, mode, 0);
 	}
 	
 	/**

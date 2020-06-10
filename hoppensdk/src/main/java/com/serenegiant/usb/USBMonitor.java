@@ -41,6 +41,7 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import com.hoppen.sdk.LogUtils;
+import com.hoppen.sdk.R;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
@@ -126,6 +127,7 @@ public final class USBMonitor {
 		mOnDeviceConnectListener = listener;
 		mAsyncHandler = HandlerThreadHandler.createHandler(TAG);
 		destroyed = false;
+		this.setDeviceFilter(DeviceFilter.getDeviceFilters(context, R.xml.usbdevice_filter));
 		if (DEBUG) Log.v(TAG, "USBMonitor:mUsbManager=" + mUsbManager);
 	}
 
@@ -251,7 +253,7 @@ public final class USBMonitor {
 	 * @param filters
 	 * @throws IllegalStateException
 	 */
-	public void setDeviceFilter(final List<DeviceFilter> filters) throws IllegalStateException {
+	private void setDeviceFilter(final List<DeviceFilter> filters) throws IllegalStateException {
 		if (destroyed) throw new IllegalStateException("already destroyed");
 		mDeviceFilters.clear();
 		mDeviceFilters.addAll(filters);

@@ -6,14 +6,29 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:background="#000000"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:gravity="center"
     >
 
     <com.serenegiant.usb.camera.widget.UVCCameraTextureView
         android:id="@+id/uvc_camera"
-        android:layout_width="213dp"
-        android:layout_height="160dp"
+        android:layout_width="800dp"
+        android:layout_height="600dp"
+        />
+
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:background="#ffffff"
+        android:id="@+id/btn_test"
+        android:layout_marginLeft="20dp"
+        />
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:background="#ff00ff"
+        android:id="@+id/btn_test2"
+        android:layout_marginLeft="20dp"
         />
 
 
